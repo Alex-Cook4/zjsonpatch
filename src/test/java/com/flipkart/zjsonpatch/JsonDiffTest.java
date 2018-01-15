@@ -138,4 +138,106 @@ public class JsonDiffTest {
 
 
     }
+
+    @Test
+    public void testAlexRemoveJSON() throws IOException {
+        JsonNode source = objectMapper.readTree("{\n" +
+                "  \"id\" : 19,\n" +
+                "  \"version\" : 1515591345793,\n" +
+                "  \"username\" : \"alex\",\n" +
+                "  \"lastPasswordChange\" : 1515591359035,\n" +
+                "  \"fullName\" : \"alex\",\n" +
+                "  \"emailAddress\" : \"alex@privitar.com\",\n" +
+                "  \"firstLogon\" : true,\n" +
+                "  \"lastLoginTimestamp\" : 0,\n" +
+                "  \"previousLastLoggedInOn\" : null,\n" +
+                "  \"authorities\" : [ \"ADMIN\", \"AUTHOR\", \"UNMASKER\", \"OPERATOR\" ],\n" +
+                "  \"accountNonExpired\" : true,\n" +
+                "  \"accountNonLocked\" : true,\n" +
+                "  \"credentialsNonExpired\" : true,\n" +
+                "  \"enabled\" : true,\n" +
+                "  \"logonPermitted\" : true\n" +
+                "}");
+        JsonNode target = objectMapper.readTree("{\n" +
+                "  \"id\" : 19,\n" +
+                "  \"version\" : 1515591359040,\n" +
+                "  \"username\" : \"alex\",\n" +
+                "  \"lastPasswordChange\" : 1515591359035,\n" +
+                "  \"fullName\" : \"alex\",\n" +
+                "  \"emailAddress\" : \"alex@privitar.com\",\n" +
+                "  \"firstLogon\" : true,\n" +
+                "  \"lastLoginTimestamp\" : 0,\n" +
+                "  \"previousLastLoggedInOn\" : null,\n" +
+                "  \"authorities\" : [ \"ADMIN\", \"UNMASKER\" ],\n" +
+                "  \"accountNonExpired\" : true,\n" +
+                "  \"accountNonLocked\" : true,\n" +
+                "  \"credentialsNonExpired\" : true,\n" +
+                "  \"enabled\" : true,\n" +
+                "  \"logonPermitted\" : true\n" +
+                "}");
+
+        EnumSet<DiffFlags> flags = DiffFlags.dontNormalizeOpIntoMoveAndCopy().clone(); //only have ADD, REMOVE, REPLACE, Don't normalize operations into MOVE & COPY
+
+        JsonNode diff = JsonDiff.asJson(source, target);
+
+        System.out.println(source);
+        System.out.println(target);
+        System.out.println(diff);
+
+        Assert.assertTrue(diff.toString().contains("/authorities/3"));
+        
+    }
+
+    @Test
+    public void testAlexReplaceJSON() throws IOException {
+        JsonNode source = objectMapper.readTree("{\n" +
+                "  \"id\" : 19,\n" +
+                "  \"version\" : 1515591359040,\n" +
+                "  \"username\" : \"alex\",\n" +
+                "  \"lastPasswordChange\" : 1515591359035,\n" +
+                "  \"fullName\" : \"alex\",\n" +
+                "  \"emailAddress\" : \"alex@privitar.com\",\n" +
+                "  \"firstLogon\" : true,\n" +
+                "  \"lastLoginTimestamp\" : 0,\n" +
+                "  \"previousLastLoggedInOn\" : null,\n" +
+                "  \"authorities\" : [ \"ADMIN\", \"UNMASKER\" ],\n" +
+                "  \"accountNonExpired\" : true,\n" +
+                "  \"accountNonLocked\" : true,\n" +
+                "  \"credentialsNonExpired\" : true,\n" +
+                "  \"enabled\" : true,\n" +
+                "  \"logonPermitted\" : true\n" +
+                "}");
+        JsonNode target = objectMapper.readTree("{\n" +
+                "  \"id\" : 19,\n" +
+                "  \"version\" : 1515591389120,\n" +
+                "  \"username\" : \"alex\",\n" +
+                "  \"lastPasswordChange\" : 1515591359035,\n" +
+                "  \"fullName\" : \"alex\",\n" +
+                "  \"emailAddress\" : \"alex@privitar.com\",\n" +
+                "  \"firstLogon\" : true,\n" +
+                "  \"lastLoginTimestamp\" : 0,\n" +
+                "  \"previousLastLoggedInOn\" : null,\n" +
+                "  \"authorities\" : [ \"ADMIN\", \"OPERATOR\", \"AUTHOR\" ],\n" +
+                "  \"accountNonExpired\" : true,\n" +
+                "  \"accountNonLocked\" : true,\n" +
+                "  \"credentialsNonExpired\" : true,\n" +
+                "  \"enabled\" : true,\n" +
+                "  \"logonPermitted\" : true\n" +
+                "}");
+
+        EnumSet<DiffFlags> flags = DiffFlags.dontNormalizeOpIntoMoveAndCopy().clone(); //only have ADD, REMOVE, REPLACE, Don't normalize operations into MOVE & COPY
+
+        JsonNode diff = JsonDiff.asJson(source, target);
+        JsonNode diff2 = JsonDiff.asJson(target, source);
+
+
+        System.out.println(source);
+        System.out.println(target);
+        System.out.println(diff);
+        System.out.println(diff2);
+
+        Assert.assertTrue(diff.toString().contains("\"/authorities/2\",\"value\":\"AUTHOR\""));
+
+    }
+
 }

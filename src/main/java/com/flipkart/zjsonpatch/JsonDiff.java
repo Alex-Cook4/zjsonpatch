@@ -366,6 +366,7 @@ public final class JsonDiff {
                     List<Object> currPath = getPath(path, pos);
                     diffs.add(Diff.generateDiff(Operation.REMOVE, currPath, srcNode));
                     srcIdx++;
+                    pos++;
                 } else {
                     List<Object> currPath = getPath(path, pos);
                     //both are unequal to lcs node
@@ -396,6 +397,7 @@ public final class JsonDiff {
             List<Object> currPath = getPath(path, pos);
             diffs.add(Diff.generateDiff(Operation.REMOVE, currPath, source.get(srcIdx)));
             srcIdx++;
+            pos++;
         }
         return pos;
     }
